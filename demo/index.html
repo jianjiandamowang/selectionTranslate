@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!-- 载入翻译窗口 样式文件 -->
+  <link rel="stylesheet" href="../css/Translate.css">
+  <style>
+    * { margin: 0; padding: 0; }
+    #translate-from { padding: 10px; font-size: 14px; }
+    #translate-result { padding: 10px; font-size: 14px; }
+    .title { font-size: 14px; color: #333333; color: #409EFF; }
+  </style>
+</head>
+<body>
+  <p>
+      1.Yesterday was my birthday, so some of my classmates sent me presents. Mother prepared a tea party for me. I invited all of them to come and take part in it.The tea party began at half past six. There were cold drinks and refreshments. We ate, talked and laughed. We felt that we were the happiest men in the world
+      昨天是我生日，所以有几位我的同班同学送我礼。母亲给我准备一个茶会。我邀请他们都前来参加。茶会下午六点半开始。有冷饮和点心。我们又吃又谈又笑。我们觉得是世界上最快乐的人。。
+  </p>
+
+  <p>
+      2.I like the Chinese new year better than any other festival. This is a time especially for rest and joy. I need not study. I wear good clothes and eat good food. I have a good time from morning till night. I am as happy as a king.
+      我喜欢中国新年比喜欢其它任何节日更甚。这是一个专为休息和欢乐的时间。我不需要读书。我穿好衣服，吃好东西。我每天从早到晚日子过得轻松愉快。我和上帝一样快乐。
+  </p>
+
+  <p class="p3">
+      3.No sooner had the witer vacation begun than I returned to my native town. Of course I
+      must make good use of it;.In the morning I reviewed my lessons and read newspapers or magazines. In the afternoon I played ball games with my friends or went fishing in the river. At night I watched television with my family. hardly had the clock on the wall struck ten when I went to bed.
+      寒假刚一开始，我就回故乡了。自然我须好好利用它。 早晨我复习功课并阅读报纸或杂志。下午我和朋友打球，或去河中钓鱼。晚上我就和家人看看电视。墙上的钟刚敲十下，我就去睡觉了。
+  </p>
+
+  <!-- 翻译窗口demo  -->
+  <div class="translateModal">
+    <div class="translate-title">
+      <div>亿学翻译</div>
+      <div id="translate-close">×</div>
+    </div>
+    <div class="translate-body">
+      <!-- 自由定制 显示翻译结果的  -->
+      <div class="title">翻译文本</div>
+      <div id="translate-from"></div>
+      <div class="title">翻译结果</div>
+      <div id="translate-result">翻译中....</div> 
+      <!-- 自由定制 -->
+    </div>
+    <div class="translate-footer"></div>
+  </div>
+  <!--  -->
+
+</body>
+<!-- 载入取词插件 -->
+<script src="../dist/Translate.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<!-- <script src="../dist/Translate.min.js"></script> -->
+<script>
+  /* =========  demo  ==========*/
+
+  var timer = null;
+
+  /**
+   * 实例
+   * new Translate() 初始化插件
+   * 可传递参数, 单独绑定dom节点，只在绑定的dom节点下 使用取词功能
+   * 例: var textTranslate = new Translate('对应节点类名或id');
+   * */
+  var textTranslate = new Translate();
+
+
+  /**
+   * success 取词成功的生命回调
+   * 回调只返回一个参数 取词的结果
+   * @param {*String} text 取词结果, 即取到的词 
+   * */
+  /**
+   * setContent 方法
+   * 设置翻译结果到 翻译窗口下 id为translate-content的节点
+   * 例： textTranslate.setContent(result);
+   * */
+  textTranslate.on('success', (text) => {
+    console.log(text);
+    /**
+     * 调用接口翻译文字 && 将文字设置到 翻译窗口内
+     * */
+    let params = { from_lang: 'zh', to_lang: 'en', input_text: text };
+    $.ajax({
+      url: 'https://api.aihub.aitutor.cn/mnp_translater',
+      type: 'POST',
+      data: JSON.stringify(params),
+      contentType: 'application/json',
+      dataType: 'JSON',
+      async: true,
+      success: (res) => {
+        if (res.code !== 10000) {
+          textTranslate.setContent('服务异常');
+        } else {
+          textTranslate.setContent(res.data);
+        }
+      },
+      fail: (err) => {
+        textTranslate.setContent('服务异常');
+      }
+    })
+  });
+  
+
+</script>
+</html>
